@@ -9,7 +9,7 @@ from kalman_filter import kf_predict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Test neural network'
+        description='Test kalman filter'
     )
     parser.add_argument('-d', '--data', type=str, help='Path to the test data', default='simulations/test.pkl')
     args = parser.parse_args()

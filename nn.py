@@ -59,8 +59,11 @@ class KGainModel(pl.LightningModule):
         self.KG = kalman_gain / 1000
 
     def reset_lstm_state(self, batch_size: int):
-        self.lstm_state = (torch.zeros(self.lstm.num_layers, batch_size, self.lstm.hidden_size).to(self.device),
-                           torch.zeros(self.lstm.num_layers, batch_size, self.lstm.hidden_size).to(self.device))
+        if isinstance(self.lstm, nn.LSTM):
+            self.lstm_state = (torch.zeros(self.lstm.num_layers, batch_size, self.lstm.hidden_size).to(self.device),
+                               torch.zeros(self.lstm.num_layers, batch_size, self.lstm.hidden_size).to(self.device))
+        else:
+            self.lstm_state = torch.zeros(self.lstm.num_layers, batch_size, self.lstm.hidden_size).to(self.device)
 
     def apply_kalman_gain(self, vel, att, dist):
         if self.apply_const:
@@ -99,12 +102,12 @@ class KGainModel(pl.LightningModule):
         timesteps = target.shape[1]
         if stage == "train":
             timesteps = min(self.train_timesteps, timesteps)
-        state_history = torch.zeros((target.shape[0], timesteps + 1, 3)).to(self.device)
+        state_history = torch.zeros((target.shape[0], timesteps, 3)).to(self.device)
         state_history[:, 0] = self.state
         KG_history = torch.zeros((target.shape[0], timesteps, 3, 3)).to(self.device)
-        for time_step in range(0, timesteps):
+        for time_step in range(1, timesteps):
             self.apply_kalman_gain(vel[:, time_step, :], att[:, time_step, :], dist[:, time_step, :])
-            state_history[:, time_step + 1] = self.state
+            state_history[:, time_step] = self.state
             KG_history[:, time_step] = self.KG
             loss = loss + self.loss_fn(target[:, time_step, :], stage)
         loss = loss / timesteps

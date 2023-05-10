@@ -13,7 +13,7 @@ if __name__ == '__main__':
     wandb_logger = WandbLogger(project="eskf-ship-2", log_model=True)
     wandb.config.device = "cuda"
     wandb.config.gradient_clip_val = 1
-    wandb.config.apply_const = False
+    wandb.config.apply_const = True
     wandb.config.train_timesteps = 10
     wandb.config.recur_hidden_dim = 32
     wandb.config.n_recur_layers = 2
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # trainer uses "gpu" instead of "cuda"
     dev = wandb.config["device"]
     dev = "gpu" if dev == "cuda" else "cpu"
-    trainer = pl.Trainer(accelerator=dev, max_epochs=5000, logger=[wandb_logger, tensorboard_logger],
+    trainer = pl.Trainer(accelerator=dev, max_epochs=2500, logger=[wandb_logger, tensorboard_logger],
                          callbacks=[callbacks.LinearTimesteps(2, 1000, 100),
                                     ModelCheckpoint(monitor='val_loss', mode='min')],
                          gradient_clip_val=wandb.config["gradient_clip_val"],

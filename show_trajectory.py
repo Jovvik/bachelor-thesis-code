@@ -31,7 +31,7 @@ if __name__ == '__main__':
     test_dataset = TrajectoryDataset(test_data)
     test_dl = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
-    model = KGainModel.load_from_checkpoint(args.model, device_str='cpu')
+    model = KGainModel.load_from_checkpoint(args.model, map_location='cpu', device_str='cpu')
     model.eval()
     model.set_beacons(test_data.beacon_positions)
 

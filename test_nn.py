@@ -21,7 +21,7 @@ if __name__ == '__main__':
     test_dataset = TrajectoryDataset(test_data)
     test_dl = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
-    model = KGainModel.load_from_checkpoint(args.model, device_str='cpu')
+    model = KGainModel.load_from_checkpoint(args.model, map_location='cpu', device_str='cpu')
     model.eval()
     model.set_beacons(test_data.beacon_positions)
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
             predicted_states = predict.squeeze(0)
             P_history = covariance.compute_covariance(predict, KG, batch, test_data)
 
-            real_errors[idx] = F.mse_loss(predicted_states[1:], target, reduction='none')
+            real_errors[idx] = F.mse_loss(predicted_states, target, reduction='none')
             cov_errors[idx] = P_history[1:].diagonal(dim1=1, dim2=2)
 
     torch.save(real_errors, 'errors/nn_real_errors.pt')

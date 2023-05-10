@@ -21,11 +21,13 @@ def display_position(data: Simulations):
         return np.hstack((x, y))
 
     legend = []
-    fig = plt.figure(figsize=(10, 10))
+    fig = plt.figure(figsize=(8, 8))
     ax = fig.add_subplot(111)
-    ax.set_xlim(-2200, 1200)
+    ax.set_xlim(-2200, 2000)
     ax.set_ylim(-1500, 1500)
     ax.set_aspect('equal')
+    ax.set_xlabel('$x_1$, м')
+    ax.set_ylabel('$x_2$, м')
 
     ax.add_patch(plt.Circle(data.start_position, 20, color=cm(1)))
     legend.append(Line2D([0], [0], color=cm(1), marker='o', linestyle='None', label='Начальное положение'))

@@ -94,9 +94,9 @@ if __name__ == '__main__':
         fname_suffix += f'_y{args.y}'
 
     train_simulations = simulate_train(args.count)
-    with open(os.path.join('simulations', f'train_bruh{fname_suffix}.pkl'), 'wb') as f:
+    with open(os.path.join('simulations', f'train{fname_suffix}.pkl'), 'wb') as f:
         pickle.dump(train_simulations, f)
 
     test_simulations = simulate_test(args.count)
-    with open(os.path.join('simulations', f'test_bruh{fname_suffix}.pkl'), 'wb') as f:
+    with open(os.path.join('simulations', f'test{fname_suffix}.pkl'), 'wb') as f:
         pickle.dump(test_simulations, f)
